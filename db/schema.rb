@@ -16,7 +16,6 @@ ActiveRecord::Schema.define(version: 20180531135158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
-  enable_extension "timescaledb"
 
   create_table "applications", force: :cascade do |t|
     t.integer  "user_id"
