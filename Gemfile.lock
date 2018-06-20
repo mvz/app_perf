@@ -362,7 +362,7 @@ DEPENDENCIES
   msgpack
   oj
   passenger
-  pg
+  pg (~> 0.18)
   pg_histogram
   pluck_to_hash
   postgres_ext

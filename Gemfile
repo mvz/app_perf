@@ -35,7 +35,7 @@ gem 'passenger'
 gem 'kaminari'
 gem "groupdate"
 gem 'calculate-all'
-gem "pg"
+gem "pg", '~> 0.18'
 gem "pg_histogram"
 gem "postgres_ext"
 gem 'foundation-rails'
