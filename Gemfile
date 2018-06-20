@@ -33,9 +33,9 @@ gem 'foreman'
 # gem 'puma'
 gem 'passenger'
 gem 'kaminari'
-gem "groupdate"
+gem "groupdate", '~> 3.1.1'
 gem 'calculate-all'
-gem "pg"
+gem "pg", '~> 0.18'
 gem "pg_histogram"
 gem "postgres_ext"
 gem 'foundation-rails'
@@ -52,7 +52,7 @@ gem "msgpack"
 gem "haml"
 gem "devise"
 gem "devise_invitable"
-gem "react-rails"
+gem "react-rails", '~> 2.2.1'
 gem 'vanilla-ujs'
 gem 'oj'
 gem 'roda'
