@@ -33,7 +33,7 @@ gem 'foreman'
 # gem 'puma'
 gem 'passenger'
 gem 'kaminari'
-gem "groupdate", '~> 3.1.1'
+gem "groupdate", '~> 3.2.1'
 gem 'calculate-all'
 gem "pg", '~> 0.18'
 gem "pg_histogram"
