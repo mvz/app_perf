@@ -52,7 +52,7 @@ gem "msgpack"
 gem "haml"
 gem "devise"
 gem "devise_invitable"
-gem "react-rails"
+gem "react-rails", '~> 2.2.1'
 gem 'vanilla-ujs'
 gem 'oj'
 gem 'roda'

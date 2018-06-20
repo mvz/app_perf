@@ -368,7 +368,7 @@ DEPENDENCIES
   postgres_ext
   pry
   rails (~> 4.2.8)
-  react-rails
+  react-rails (~> 2.2.1)
   roda
   rspec-rails
   sass-rails
