@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 gem 'dotenv-rails'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.8'
+gem 'rails', '~> 5.0.0'
 # Use sqlite3 as the database for Active Record
 # Use SCSS for stylesheets
 gem 'sass-rails'
@@ -46,7 +46,6 @@ gem "activerecord-import"
 gem "app_perf_rpm"
 gem "app_perf_agent"
 gem 'faker'
-gem "activeuuid"
 gem "msgpack"
 gem "haml"
 gem "devise"
