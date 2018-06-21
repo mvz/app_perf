@@ -26,7 +26,7 @@ class Stats::BaseService
                 :traces
 
   def traces
-    @traces = WithFilterService.new(params, base_relation).call
+    @traces ||= WithFilterService.new(params, base_relation).call
   end
 
   def base_relation
