@@ -19,6 +19,4 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   %body.hold-transition
     = yield
-    / ./wrapper
-    %script{:src => "https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"}
     = javascript_include_tag "application"

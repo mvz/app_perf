@@ -19,6 +19,7 @@
 //= require daterangepicker/daterangepicker
 //= require vis/vis
 //= require AdminLTE
+//= require raphael
 
 //= require utils
 //= require charts/charts
