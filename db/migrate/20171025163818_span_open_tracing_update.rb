@@ -9,12 +9,12 @@ class SpanOpenTracingUpdate < ActiveRecord::Migration
 
     reversible do |dir|
       dir.up  {
-        remove_foreign_key :spans, :trace
+        remove_foreign_key :spans, column: :trace_id
         change_column :spans, :trace_id, :string
       }
       dir.down {
-        add_foreign_key :spans, :trace
         change_column :spans, :trace_id, :integer
+        add_foreign_key :spans, column: :trace_id
       }
     end
   end
