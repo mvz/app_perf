@@ -43,7 +43,7 @@ gem "highcharts-rails"
 gem 'sinatra', :require => nil
 gem "sidekiq"
 gem "activerecord-import"
-gem "app_perf_rpm"
+gem "app_perf_rpm", git: 'https://github.com/randy-girard/app_perf_rpm.git'
 gem "app_perf_agent"
 gem 'faker'
 gem "msgpack"
