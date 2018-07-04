@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Span < ActiveRecord::Base
+class Span < ApplicationRecord
   belongs_to :application
   belongs_to :host
   belongs_to :grouping, primary_key: :uuid, polymorphic: true

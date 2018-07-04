@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Backtrace < ActiveRecord::Base
+class Backtrace < ApplicationRecord
   belongs_to :backtraceable, polymorphic: true
 
   serialize :backtrace

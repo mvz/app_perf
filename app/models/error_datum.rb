@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ErrorDatum < ActiveRecord::Base
+class ErrorDatum < ApplicationRecord
   belongs_to :application
   belongs_to :host
   belongs_to :error_message

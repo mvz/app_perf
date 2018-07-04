@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Host < ActiveRecord::Base
+class Host < ApplicationRecord
   belongs_to :application
 
   has_many :metric_data

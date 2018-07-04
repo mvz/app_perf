@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Trace < ActiveRecord::Base
+class Trace < ApplicationRecord
   belongs_to :application
   belongs_to :host
 

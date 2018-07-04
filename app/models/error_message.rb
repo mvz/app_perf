@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ErrorMessage < ActiveRecord::Base
+class ErrorMessage < ApplicationRecord
   belongs_to :application
   belongs_to :host
 

@@ -147,26 +147,6 @@ Rails/ApplicationJob:
     - 'app/workers/app_perf_agent_worker.rb'
     - 'app/workers/open_tracing_worker.rb'
 
-# Offense count: 15
-# Cop supports --auto-correct.
-Rails/ApplicationRecord:
-  Exclude:
-    - 'app/models/application.rb'
-    - 'app/models/backtrace.rb'
-    - 'app/models/database_call.rb'
-    - 'app/models/database_type.rb'
-    - 'app/models/error_datum.rb'
-    - 'app/models/error_message.rb'
-    - 'app/models/event.rb'
-    - 'app/models/host.rb'
-    - 'app/models/layer.rb'
-    - 'app/models/log_entry.rb'
-    - 'app/models/metric.rb'
-    - 'app/models/metric_datum.rb'
-    - 'app/models/span.rb'
-    - 'app/models/trace.rb'
-    - 'app/models/user.rb'
-
 # Offense count: 1
 # Configuration parameters: Include.
 # Include: db/migrate/*.rb

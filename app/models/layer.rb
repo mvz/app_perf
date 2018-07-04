@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Layer < ActiveRecord::Base
+class Layer < ApplicationRecord
   belongs_to :application
 
   has_many :spans

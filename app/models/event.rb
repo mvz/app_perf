@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   belongs_to :application
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Application < ActiveRecord::Base
+class Application < ApplicationRecord
   belongs_to :user
   has_many :metrics, dependent: :delete_all
   has_many :metric_data
