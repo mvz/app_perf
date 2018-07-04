@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AppPerfAgentWorker < ActiveJob::Base
+class AppPerfAgentWorker < ApplicationJob
   queue_as :app_perf
 
   attr_accessor :license_key,
@@ -133,15 +133,11 @@ class AppPerfAgentWorker < ActiveJob::Base
 
       # Set timestamp if never set, or incoming timestamp is earlier than
       # the oldest recorded already.
-      if trace.timestamp.nil? || trace.timestamp > timestamp
-        trace.timestamp = timestamp
-      end
+      trace.timestamp = timestamp if trace.timestamp.nil? || trace.timestamp > timestamp
 
       # Set the duration if never set, or the incoming duration is slower
       # than the previous.
-      if trace.duration.nil? || trace.duration < duration
-        trace.duration = duration
-      end
+      trace.duration = duration if trace.duration.nil? || trace.duration < duration
 
       if trace.new_record?
         traces << trace

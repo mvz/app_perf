@@ -2,7 +2,7 @@
 
 require 'securerandom'
 
-class OpenTracingWorker < ActiveJob::Base
+class OpenTracingWorker < ApplicationJob
   queue_as :app_perf
 
   attr_accessor :license_key,
