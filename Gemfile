@@ -56,6 +56,7 @@ gem 'vanilla-ujs'
 gem 'oj'
 gem 'roda'
 gem 'pluck_to_hash'
+gem 'fileutils'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
