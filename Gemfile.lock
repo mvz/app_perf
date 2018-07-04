@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/randy-girard/app_perf_rpm.git
-  revision: ec3c9281edd5ba96922ff5a41fccdc278d2624b2
+  revision: 524f9531fcfe9f2035d9c9041ad18fb6e7ec541c
   specs:
     app_perf_rpm (0.2.4)
       msgpack
@@ -54,7 +54,7 @@ GEM
       msgpack
       vmstat (= 2.3.0)
     arel (7.1.4)
-    autoprefixer-rails (8.6.3)
+    autoprefixer-rails (8.6.4)
       execjs
     babel-source (5.8.35)
     babel-transpiler (0.7.0)
@@ -116,9 +116,9 @@ GEM
       devise (>= 4.0.0)
     diff-lcs (1.3)
     docile (1.3.1)
-    dotenv (2.4.0)
-    dotenv-rails (2.4.0)
-      dotenv (= 2.4.0)
+    dotenv (2.5.0)
+    dotenv-rails (2.5.0)
+      dotenv (= 2.5.0)
       railties (>= 3.2, < 6.0)
     erubis (2.7.0)
     execjs (2.7.0)
@@ -185,12 +185,12 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.0.2)
     nio4r (2.3.1)
-    nokogiri (1.8.3)
+    nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
-    oj (3.6.2)
+    oj (3.6.3)
     opentracing (0.4.1)
     orm_adapter (0.5.0)
-    passenger (5.3.2)
+    passenger (5.3.3)
       rack
       rake (>= 0.8.1)
     pg (0.21.0)
@@ -270,8 +270,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    sassc (1.11.4)
-      bundler
+    sassc (1.12.0)
       ffi (~> 1.9.6)
       sass (>= 3.3.0)
     sassc-rails (1.3.0)
@@ -322,7 +321,7 @@ GEM
     tilt (2.0.8)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.12)
+    uglifier (4.1.14)
       execjs (>= 0.3.0, < 3)
     vanilla-ujs (1.3.0)
       railties (>= 4.2.0)
