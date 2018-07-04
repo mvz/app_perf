@@ -28,11 +28,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
-# Use Unicorn as the app server
-# gem 'unicorn'
-gem 'foreman'
-# gem 'puma'
-gem 'passenger'
+# Use Puma as the app server
+gem 'puma'
 gem 'kaminari'
 gem 'groupdate', '~> 3.2.1'
 gem 'calculate-all'
@@ -71,6 +68,8 @@ group :development, :test do
 end
 
 group :development do
+  gem 'foreman'
+
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
 

@@ -191,9 +191,6 @@ GEM
     oj (3.6.3)
     opentracing (0.4.1)
     orm_adapter (0.5.0)
-    passenger (5.3.3)
-      rack
-      rake (>= 0.8.1)
     pg (0.21.0)
     pg_histogram (0.3)
       activerecord (>= 4.0)
@@ -374,11 +371,11 @@ DEPENDENCIES
   kaminari
   msgpack
   oj
-  passenger
   pg (~> 0.18)
   pg_histogram
   pluck_to_hash
   pry
+  puma
   rails (~> 5.0.0)
   react-rails (~> 2.2.1)
   roda

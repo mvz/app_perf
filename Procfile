@@ -1,2 +1,2 @@
-web: bundle exec passenger start -p $PORT -a 0.0.0.0
+web: bundle exec puma -C config/puma.rb
 worker: bundle exec sidekiq --queue app_perf --verbose
