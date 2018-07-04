@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateBacktraces < ActiveRecord::Migration
   def change
     create_table :backtraces do |t|

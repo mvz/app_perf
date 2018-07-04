@@ -1,11 +1,12 @@
-class ErrorReporter < Reporter
+# frozen_string_literal: true
 
+class ErrorReporter < Reporter
   def report_data
-    data = application.analytic_event_data.where(:name => "Error")
+    data = application.analytic_event_data.where(name: 'Error')
 
     [{
-      :name => "Errors",
-      :data => data.group_by_period(*report_params).sum(:value)
+      name: 'Errors',
+      data: data.group_by_period(*report_params).sum(:value)
     }]
   end
 end

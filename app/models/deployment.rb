@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class Deployment < ::Event
   attr_accessor :event_time
 
-  validates :title, :presence => true
-  validates :start_time, :presence => true
-  validates :end_time, :presence => true
+  validates :title, presence: true
+  validates :start_time, presence: true
+  validates :end_time, presence: true
 
   def event_time=(et)
     self.start_time = et
@@ -11,6 +13,6 @@ class Deployment < ::Event
   end
 
   def event_time
-    self.start_time
+    start_time
   end
 end

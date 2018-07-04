@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class MetricReporter < Reporter
   include ActionView::Helpers::NumberHelper
 
   attr_accessor :host
 
   def initialize(host, params)
-    params[:period] ||= "minute"
+    params[:period] ||= 'minute'
 
     self.host = host
     self.params = params
@@ -18,12 +20,12 @@ class MetricReporter < Reporter
     relation = @host
       .metric_data
       .joins(:metric)
-      .where("metrics.data_type = ?", data_type)
+      .where('metrics.data_type = ?', data_type)
       .group(:name)
 
     metrics = relation
-      .group_by_period(*report_params("timestamp"))
-      .average("metric_data.value")
+      .group_by_period(*report_params('timestamp'))
+      .average('metric_data.value')
 
     hash = []
     labels = {}
@@ -33,23 +35,27 @@ class MetricReporter < Reporter
     end
 
     labels.each_pair do |label, data|
-      hash.push({ :name => label , :data => data, :id => "ID-#{label}" }) rescue nil
+      begin
+        hash.push(name: label, data: data, id: "ID-#{label}")
+      rescue StandardError
+        nil
+      end
     end
 
     deployments = Deployment
-      .where("start_time BETWEEN :start AND :end OR end_time BETWEEN :start AND :end", :start => time_range.first, :end => time_range.last)
+      .where('start_time BETWEEN :start AND :end OR end_time BETWEEN :start AND :end', start: time_range.first, end: time_range.last)
 
     {
-      :data => hash,
-      :events => deployments.map {|deployment|
+      data: hash,
+      events: deployments.map do |deployment|
         {
-          :min => deployment.start_time.to_i * 1000,
-          :max => deployment.end_time.to_i * 1000,
-          :eventType => "Deployment",
-          :title => deployment.title,
-          :description => deployment.description
+          min: deployment.start_time.to_i * 1000,
+          max: deployment.end_time.to_i * 1000,
+          eventType: 'Deployment',
+          title: deployment.title,
+          description: deployment.description
         }
-      }
+      end
     }
   end
 end

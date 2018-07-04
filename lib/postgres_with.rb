@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveRecord
   class Relation
     class Merger # :nodoc:
@@ -63,7 +65,6 @@ module PostgresWithRelation
       self.with_values += [opts] + rest
       self
     end
-
   end
 
   def build_arel
@@ -80,14 +81,14 @@ module PostgresWithRelation
       when String
         with_value
       when Hash
-        with_value.map  do |name, expression|
+        with_value.map do |name, expression|
           case expression
           when String
             select = Arel::Nodes::SqlLiteral.new "(#{expression})"
           when ActiveRecord::Relation, Arel::SelectManager
             select = Arel::Nodes::SqlLiteral.new "(#{expression.to_sql})"
           end
-          Arel::Nodes::As.new Arel::Nodes::SqlLiteral.new("\"#{name.to_s}\""), select
+          Arel::Nodes::As.new Arel::Nodes::SqlLiteral.new("\"#{name}\""), select
         end
       when Arel::Nodes::As
         with_value

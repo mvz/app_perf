@@ -1,17 +1,17 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'rails_helper'
 
-describe ErrorsController, :type => :controller do
+describe ErrorsController, type: :controller do
   login_user
 
   # TODO: auto-generated
   describe 'GET index' do
     it 'works' do
       application = create(:application)
-      create(:error_message, :application => application)
+      create(:error_message, application: application)
 
-      get :index, :application_id => application
+      get :index, params: { application_id: application }
       expect(response.status).to eq(200)
     end
   end
@@ -20,12 +20,10 @@ describe ErrorsController, :type => :controller do
   describe 'GET show' do
     it 'works' do
       application = create(:application)
-      error_datum = create(:error_datum, :application => application)
+      error_datum = create(:error_datum, application: application)
 
-
-      get :show, :application_id => application, :id => error_datum
+      get :show, params: { application_id: application, id: error_datum }
       expect(response.status).to eq(200)
     end
   end
-
 end

@@ -1,12 +1,11 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 describe DatabaseReporter do
-
   # TODO: auto-generated
   describe '#render' do
-    #it 'works' do
+    # it 'works' do
     #  application = create(:application)
     #  database_call = create(:database_call, :application => application)
     #  params = {}
@@ -14,12 +13,12 @@ describe DatabaseReporter do
     #  expect(view_context).to receive(:area_chart)
     #  database_reporter = DatabaseReporter.new(application, params, view_context)
     #  database_reporter.render
-    #end
+    # end
   end
 
   # TODO: auto-generated
   describe '#report_data' do
-    #it 'works' do
+    # it 'works' do
     #  application = create(:application)
     #  database_call = create(:database_call, :application => application)
     #  params = {}
@@ -27,7 +26,6 @@ describe DatabaseReporter do
     #  database_reporter = DatabaseReporter.new(application, params, view_context)
     #  result = database_reporter.report_data
     #  expect(result).not_to be_nil
-    #end
+    # end
   end
-
 end

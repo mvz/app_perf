@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class ErrorInstancesController < ApplicationController
   before_action :set_error_message
 
   def index
-    @error_instances = @error_message.error_data.order("created_at DESC")
+    @error_instances = @error_message.error_data.order('created_at DESC')
   end
 
   def show

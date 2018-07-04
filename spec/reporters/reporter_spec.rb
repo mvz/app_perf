@@ -1,9 +1,8 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 describe Reporter do
-
   describe '#new' do
     it 'works' do
       application = double('application')
@@ -22,5 +21,4 @@ describe Reporter do
       expect(result).not_to be_nil
     end
   end
-
 end

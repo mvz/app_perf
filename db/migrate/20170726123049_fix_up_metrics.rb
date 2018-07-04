@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FixUpMetrics < ActiveRecord::Migration
   def change
     remove_column :metrics, :unit, :string

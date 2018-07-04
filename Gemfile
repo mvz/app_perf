@@ -1,5 +1,6 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
 
+source 'https://rubygems.org'
 
 gem 'dotenv-rails'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -33,24 +34,24 @@ gem 'foreman'
 # gem 'puma'
 gem 'passenger'
 gem 'kaminari'
-gem "groupdate", '~> 3.2.1'
+gem 'groupdate', '~> 3.2.1'
 gem 'calculate-all'
-gem "pg", '~> 0.18'
-gem "pg_histogram"
+gem 'pg', '~> 0.18'
+gem 'pg_histogram'
 gem 'foundation-rails'
-gem "font-awesome-rails"
-gem "highcharts-rails"
-gem 'sinatra', :require => nil
-gem "sidekiq"
-gem "activerecord-import"
-gem "app_perf_rpm", git: 'https://github.com/randy-girard/app_perf_rpm.git'
-gem "app_perf_agent"
+gem 'font-awesome-rails'
+gem 'highcharts-rails'
+gem 'sinatra', require: nil
+gem 'sidekiq'
+gem 'activerecord-import'
+gem 'app_perf_rpm', git: 'https://github.com/randy-girard/app_perf_rpm.git'
+gem 'app_perf_agent'
 gem 'faker'
-gem "msgpack"
-gem "haml"
-gem "devise"
-gem "devise_invitable"
-gem "react-rails", '~> 2.2.1'
+gem 'msgpack'
+gem 'haml'
+gem 'devise'
+gem 'devise_invitable'
+gem 'react-rails', '~> 2.2.1'
 gem 'vanilla-ujs'
 gem 'oj'
 gem 'roda'
@@ -74,7 +75,7 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem "capistrano", "~> 3.4"
+  gem 'capistrano', '~> 3.4'
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
   gem 'capistrano-bundler'
@@ -84,5 +85,5 @@ group :development do
 end
 
 group :test do
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
 end

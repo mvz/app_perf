@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   def index
     @users = User.all
@@ -12,7 +14,7 @@ class UsersController < ApplicationController
     if user.valid?
       redirect_to dynamic_url(:users)
     else
-      render "new"
+      render 'new'
     end
   end
 
@@ -23,10 +25,10 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if @user.update_attributes(user_params)
+    if @user.update(user_params)
       redirect_to dynamic_url(:users)
     else
-      render "edit"
+      render 'edit'
     end
   end
 
@@ -42,7 +44,6 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(
       :name,
-      :email
-    )
+      :email)
   end
 end

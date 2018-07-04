@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameTransactionSampleDataToSpans < ActiveRecord::Migration
   def change
     rename_column :transaction_sample_data, :sample_type, :span_type

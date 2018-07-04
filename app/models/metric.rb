@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'digest/sha1'
 
 class Metric < ActiveRecord::Base
   belongs_to :application
   belongs_to :host
 
-  has_many :metric_data, :dependent => :delete_all
+  has_many :metric_data, dependent: :delete_all
 
   def clean_name
     Digest::SHA1.hexdigest(data_type.to_s.downcase)
@@ -12,15 +14,15 @@ class Metric < ActiveRecord::Base
 
   def self.metricify(type, value)
     case type.to_s.downcase
-    when "cpu"
+    when 'cpu'
       value
-    when "memory"
+    when 'memory'
       value / 1.gigabyte
-    when "network"
+    when 'network'
       value / 1.gigabyte
-    when "disk"
+    when 'disk'
       value / 1.gigabyte
-    when "load"
+    when 'load'
       value
     else
       value
@@ -29,18 +31,18 @@ class Metric < ActiveRecord::Base
 
   def unit
     case data_type.to_s.downcase
-    when "cpu"
-      "kb"
-    when "memory"
-      "gb"
-    when "network"
-      "gb"
-    when "disk"
-      "gb"
-    when "load"
-      ""
+    when 'cpu'
+      'kb'
+    when 'memory'
+      'gb'
+    when 'network'
+      'gb'
+    when 'disk'
+      'gb'
+    when 'load'
+      ''
     else
-      ""
+      ''
     end
   end
 end

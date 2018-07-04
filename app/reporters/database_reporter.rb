@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DatabaseReporter < Reporter
   def report_data
     time_range, period = Reporter.time_range(params)
@@ -5,11 +7,11 @@ class DatabaseReporter < Reporter
     data = application
       .database_calls
       .joins(:database_type, :span)
-      .group("database_types.name")
-      .group_by_period(*report_params("database_calls.timestamp"))
+      .group('database_types.name')
+      .group_by_period(*report_params('database_calls.timestamp'))
 
-    data = data.where("spans.layer_id = ?", params[:_layer]) if params[:_layer]
-    data = data.sum("database_calls.duration")
+    data = data.where('spans.layer_id = ?', params[:_layer]) if params[:_layer]
+    data = data.sum('database_calls.duration')
 
     hash = []
     layers = {}
@@ -20,7 +22,11 @@ class DatabaseReporter < Reporter
     end
 
     layers.each_pair do |layer, data|
-      hash.push({ :name => layer , :data => data, :id => "DATA1" }) rescue nil
+      begin
+        hash.push(name: layer, data: data, id: 'DATA1')
+      rescue StandardError
+        nil
+      end
     end
 
     hash

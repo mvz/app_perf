@@ -1,12 +1,11 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 describe MemoryReporter do
-
   # TODO: auto-generated
   describe '#render' do
-    #it 'works' do
+    # it 'works' do
     #  application = create(:application)
     #  analytic_event_data = create(:analytic_event_datum, :application => application)
     #  params = {}
@@ -14,12 +13,12 @@ describe MemoryReporter do
     #  expect(view_context).to receive(:area_chart)
     #  memory_reporter = MemoryReporter.new(application, params, view_context)
     #  memory_reporter.render
-    #end
+    # end
   end
 
   # TODO: auto-generated
   describe '#report_data' do
-    #it 'works' do
+    # it 'works' do
     #  application = create(:application)
     #  analytic_event_data = create(:analytic_event_datum, :application => application)
     #  params = {}
@@ -27,7 +26,6 @@ describe MemoryReporter do
     #  memory_reporter = MemoryReporter.new(application, params, view_context)
     #  result = memory_reporter.report_data
     #  expect(result).not_to be_nil
-    #end
+    # end
   end
-
 end

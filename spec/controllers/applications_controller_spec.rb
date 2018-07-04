@@ -1,8 +1,8 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'rails_helper'
 
-describe ApplicationsController, :type => :controller do
+describe ApplicationsController, type: :controller do
   login_user
 
   # TODO: auto-generated
@@ -25,7 +25,7 @@ describe ApplicationsController, :type => :controller do
   describe 'GET edit' do
     it 'works' do
       application = create(:application)
-      get :edit, :id => application
+      get :edit, params: { id: application }
       expect(response.status).to eq(200)
     end
   end
@@ -34,7 +34,7 @@ describe ApplicationsController, :type => :controller do
   describe 'PUT update' do
     it 'works' do
       application = create(:application)
-      put :update, :id => application, :application => { :name => "Test" }
+      put :update, params: { id: application, application: { name: 'Test' } }
       expect(response.status).to eq(302)
       expect(response).to redirect_to(edit_application_path(application))
     end
@@ -44,10 +44,9 @@ describe ApplicationsController, :type => :controller do
   describe 'DELETE destroy' do
     it 'works' do
       application = create(:application)
-      delete :destroy, :id => application
+      delete :destroy, params: { id: application }
       expect(response.status).to eq(302)
       expect(response).to redirect_to(applications_path)
     end
   end
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppPerfAgentWorker < ActiveJob::Base
   queue_as :app_perf
 
@@ -11,44 +13,38 @@ class AppPerfAgentWorker < ActiveJob::Base
                 :protocol_version
 
   def perform(params, body)
-    #AppPerfRpm.without_tracing do
-      json = decompress_params(body)
+    # AppPerfRpm.without_tracing do
+    json = decompress_params(body)
 
-      self.license_key      = params.fetch("license_key") { nil }
-      self.protocol_version = params.fetch("protocol_version") { nil }
-      self.hostname         = json.fetch("host")
-      self.name             = json.fetch("name") { nil }
+    self.license_key      = params.fetch('license_key') { nil }
+    self.protocol_version = params.fetch('protocol_version') { nil }
+    self.hostname         = json.fetch('host')
+    self.name             = json.fetch('name') { nil }
 
-      if self.license_key.nil? ||
-         self.protocol_version.nil?
-        return
-      end
+    if license_key.nil? ||
+        protocol_version.nil?
+      return
+    end
 
-      self.data = Array(json.fetch("data"))
+    self.data = Array(json.fetch('data'))
 
-      self.application = Application.where(:license_key => license_key).first_or_initialize
-      self.application.name = name
-      self.application.save
+    self.application = Application.where(license_key: license_key).first_or_initialize
+    application.name = name
+    application.save
 
-      self.host = Host.where(:name => hostname).first_or_create
+    self.host = Host.where(name: hostname).first_or_create
 
-      if protocol_version.to_i.eql?(2)
-        errors, remaining_data = data.partition {|d| d[0] == "error" }
-        metrics, spans = Array(remaining_data).partition {|d| d[0] == "metric" }
+    if protocol_version.to_i.eql?(2)
+      errors, remaining_data = data.partition { |d| d[0] == 'error' }
+      metrics, spans = Array(remaining_data).partition { |d| d[0] == 'metric' }
 
-        if metrics.present?
-          process_metric_data(metrics)
-        end
+      process_metric_data(metrics) if metrics.present?
 
-        if errors.present? && application.present?
-          process_error_data(errors)
-        end
+      process_error_data(errors) if errors.present? && application.present?
 
-        if spans.present? && application.present?
-          process_version_2(spans)
-        end
-      end
-    #end
+      process_version_2(spans) if spans.present? && application.present?
+    end
+    # end
   end
 
   private
@@ -61,12 +57,12 @@ class AppPerfAgentWorker < ActiveJob::Base
 
   def load_data(data)
     data
-      .map {|datum|
+      .map do |datum|
         begin
           _layer, _trace_key, _start, _duration, _serialized_opts = datum
           _opts = _serialized_opts
-        rescue => ex
-          Rails.logger.error "SERIALIZATION ERROR"
+        rescue StandardError => ex
+          Rails.logger.error 'SERIALIZATION ERROR'
           Rails.logger.error ex.message.to_s
           Rails.logger.error _serialized_opts.inspect
           _opts = {}
@@ -76,64 +72,61 @@ class AppPerfAgentWorker < ActiveJob::Base
 
         begin
           [_layer, trace_key, _start.to_f, _duration.to_f, _opts]
-        rescue => ex
-          Rails.logger.error "LOAD DATA ERROR"
+        rescue StandardError => ex
+          Rails.logger.error 'LOAD DATA ERROR'
           Rails.logger.error "DATA: #{datum.inspect}"
           Rails.logger.error "PARSED DATA: #{[_layer, _trace_key, _start, _duration, _serialized_opts].inspect}"
           raise
         end
-      }
+      end
   end
 
   def load_layers(data)
     existing_layers = application.layers.all
-    layer_names = data.map {|d| d[0] }.compact.uniq
-    new_layers = (layer_names - existing_layers.map(&:name)).map {|l|
-      layer = application.layers.where(:name => l).first_or_initialize
+    layer_names = data.map { |d| d[0] }.compact.uniq
+    new_layers = (layer_names - existing_layers.map(&:name)).map do |l|
+      layer = application.layers.where(name: l).first_or_initialize
       layer.save
       layer
-    }
-    (new_layers + existing_layers).uniq {|l| l.name }
+    end
+    (new_layers + existing_layers).uniq(&:name)
   end
 
   def load_database_types(data)
     existing_database_types = application.database_types.all
     database_type_names = data
-      .map {|d| d[4]["adapter"] }
+      .map { |d| d[4]['adapter'] }
       .compact
       .uniq
-    new_database_types = (database_type_names - existing_database_types.map(&:name)).map {|adapter|
+    new_database_types = (database_type_names - existing_database_types.map(&:name)).map do |adapter|
       database_type = application.database_types.where(
-        :name => adapter
-      ).first_or_initialize
+        name: adapter).first_or_initialize
       database_type.save
       database_type
-    }
-    (new_database_types + existing_database_types).uniq {|l| l.name }
+    end
+    (new_database_types + existing_database_types).uniq(&:name)
   end
 
   def load_traces(data)
     traces = []
     timestamps = data
-      .group_by {|datum| datum[1] }
-      .flat_map {|trace_key, events| { trace_key => events.map {|e| e[2] }.max } }
+      .group_by { |datum| datum[1] }
+      .flat_map { |trace_key, events| { trace_key => events.map { |e| e[2] }.max } }
       .reduce({}) { |h, v| h.merge v }
     durations = data
-      .group_by {|datum| datum[1] }
-      .flat_map {|trace_key, events| { trace_key => events.map {|e| e[3] }.max } }
+      .group_by { |datum| datum[1] }
+      .flat_map { |trace_key, events| { trace_key => events.map { |e| e[3] }.max } }
       .reduce({}) { |h, v| h.merge v }
 
-    trace_keys = data.map {|d| d[1] }.compact.uniq
-    existing_traces = application.traces.where(:trace_key => trace_keys)
+    trace_keys = data.map { |d| d[1] }.compact.uniq
+    existing_traces = application.traces.where(trace_key: trace_keys)
 
-    trace_keys.each {|trace_key|
+    trace_keys.each do |trace_key|
       timestamp = Time.at(timestamps[trace_key])
       duration = durations[trace_key]
 
-      trace = existing_traces.find {|t| t.trace_key == trace_key }
-      if trace.nil?
-        trace = application.traces.new(:trace_key => trace_key)
-      end
+      trace = existing_traces.find { |t| t.trace_key == trace_key }
+      trace = application.traces.new(trace_key: trace_key) if trace.nil?
 
       trace.host = host
       trace.trace_key = trace_key
@@ -155,10 +148,10 @@ class AppPerfAgentWorker < ActiveJob::Base
       else
         trace.save
       end
-    }
+    end
     ids = Trace.import(traces).ids
 
-    application.traces.where(:trace_key => trace_keys).all
+    application.traces.where(trace_key: trace_keys).all
   end
 
   def process_version_2(data)
@@ -175,39 +168,38 @@ class AppPerfAgentWorker < ActiveJob::Base
     data.each do |_layer, _trace_key, _start, _duration, _opts|
       hash = {}
 
-      layer = layers.find {|l| l.name == _layer }
+      layer = layers.find { |l| l.name == _layer }
 
       endpoint = nil
       database_call = nil
-      url = _opts.fetch("url") { nil }
-      domain = _opts.fetch("domain") { nil }
-      controller = _opts.fetch("controller") { nil }
-      action = _opts.fetch("action") { nil }
-      query = _opts.fetch("query") { nil }
-      adapter = _opts.fetch("adapter") { nil }
-      _backtrace = _opts.delete("backtrace")
+      url = _opts.fetch('url') { nil }
+      domain = _opts.fetch('domain') { nil }
+      controller = _opts.fetch('controller') { nil }
+      action = _opts.fetch('action') { nil }
+      query = _opts.fetch('query') { nil }
+      adapter = _opts.fetch('adapter') { nil }
+      _backtrace = _opts.delete('backtrace')
 
       timestamp = Time.at(_start)
       duration = _duration
 
       if query
-        database_type = database_types.find {|dt| dt.name == adapter }
+        database_type = database_types.find { |dt| dt.name == adapter }
         database_call = application.database_calls.new(
-          :uuid => SecureRandom.uuid.to_s,
-          :database_type_id => database_type.id,
-          :host_id => host.id,
-          :layer_id => layer.id,
-          :statement => query,
-          :timestamp => timestamp,
-          :duration => _duration
-        )
+          uuid: SecureRandom.uuid.to_s,
+          database_type_id: database_type.id,
+          host_id: host.id,
+          layer_id: layer.id,
+          statement: query,
+          timestamp: timestamp,
+          duration: _duration)
         database_calls << database_call
       end
 
       span = {}
       if database_call
         span[:grouping_id] = database_call.uuid.to_s
-        span[:grouping_type] = "DatabaseCall"
+        span[:grouping_type] = 'DatabaseCall'
       end
       span[:host_id] = host.id
       span[:layer_id] = layer.id
@@ -221,7 +213,7 @@ class AppPerfAgentWorker < ActiveJob::Base
         backtrace = Backtrace.new
         backtrace.backtrace = _backtrace
         backtrace.backtraceable_id = span[:uuid]
-        backtrace.backtraceable_type = "Span"
+        backtrace.backtraceable_type = 'Span'
         backtraces << backtrace
       end
 
@@ -229,33 +221,32 @@ class AppPerfAgentWorker < ActiveJob::Base
     end
 
     all_events = []
-    spans.select {|s| s[:trace_id] }.group_by {|s| s[:trace_id] }.each_pair do |trace_key, events|
-      trace = traces.find {|t| t.trace_key == trace_key }
+    spans.select { |s| s[:trace_id] }.group_by { |s| s[:trace_id] }.each_pair do |trace_key, events|
+      trace = traces.find { |t| t.trace_key == trace_key }
       next if trace.nil?
-      timestamp = events.map {|e| e[:timestamp] }.min
-      duration = events.map {|e| e[:duration] }.max
-      url = (events.find {|e| e[:payload]["url"] } || {}).fetch(:payload, {}).fetch("url") { nil }
-      domain = (events.find {|e| e[:payload]["domain"] } || {}).fetch(:payload, {}).fetch("domain") { nil }
-      controller = (events.find {|e| e[:payload]["controller"] } || {}).fetch(:payload, {}).fetch("controller") { nil }
-      action = (events.find {|e| e[:payload]["action"] } || {}).fetch(:payload, {}).fetch("action") { nil }
-      events.each { |e|
-        e[:payload]["url"] ||= url
-        e[:payload]["domain"] ||= domain
-        e[:payload]["controller"] ||= controller
-        e[:payload]["action"] ||= action
+      timestamp = events.map { |e| e[:timestamp] }.min
+      duration = events.map { |e| e[:duration] }.max
+      url = (events.find { |e| e[:payload]['url'] } || {}).fetch(:payload, {}).fetch('url') { nil }
+      domain = (events.find { |e| e[:payload]['domain'] } || {}).fetch(:payload, {}).fetch('domain') { nil }
+      controller = (events.find { |e| e[:payload]['controller'] } || {}).fetch(:payload, {}).fetch('controller') { nil }
+      action = (events.find { |e| e[:payload]['action'] } || {}).fetch(:payload, {}).fetch('action') { nil }
+      events.each do |e|
+        e[:payload]['url'] ||= url
+        e[:payload]['domain'] ||= domain
+        e[:payload]['controller'] ||= controller
+        e[:payload]['action'] ||= action
         e[:trace_id] = trace.trace_key
-      }
+      end
 
       existing_spans = trace.spans.all
-      new_spans = events.map {|s| application.spans.new(s) }
+      new_spans = events.map { |s| application.spans.new(s) }
       all_spans = existing_spans + new_spans
-      all_spans.each {|s| s.exclusive_duration = get_exclusive_duration(s, all_spans) }
+      all_spans.each { |s| s.exclusive_duration = get_exclusive_duration(s, all_spans) }
 
-      all_spans.select {|s| s.id.present? }.each(&:save)
+      all_spans.select { |s| s.id.present? }.each(&:save)
 
       all_events += new_spans
     end
-
 
     Backtrace.import(backtraces)
     Span.import(all_events)
@@ -264,18 +255,18 @@ class AppPerfAgentWorker < ActiveJob::Base
 
   def get_exclusive_duration(span, spans)
     children_data = span_children_data(span, spans)
-    children_data.size > 0 ? children_duration(children_data) : span.duration
+    !children_data.empty? ? children_duration(children_data) : span.duration
   end
 
   def span_children_data(span, spans)
     spans
-      .select {|s| span.parent_of?(s) }
+      .select { |s| span.parent_of?(s) }
   end
 
   def children_duration(children)
     children
-      .map {|span| span.duration.to_f / 1000 }
-      .inject(0) {|sum, x| sum + x }
+      .map { |span| span.duration.to_f / 1000 }
+      .inject(0) { |sum, x| sum + x }
   end
 
   def generate_trace_id(seed = nil)
@@ -297,12 +288,12 @@ class AppPerfAgentWorker < ActiveJob::Base
 
   def process_error_data(data)
     error_data = []
-    data.select {|d| d.first.eql?("error") }.each do |datum|
+    data.select { |d| d.first.eql?('error') }.each do |datum|
       _, trace_key, timestamp, data = datum
-      message, backtrace, fingerprint = generate_fingerprint(data["message"], data["backtrace"])
+      message, backtrace, fingerprint = generate_fingerprint(data['message'], data['backtrace'])
 
-      error_message = application.error_messages.where(:fingerprint => fingerprint).first_or_initialize
-      error_message.error_class ||= data["error_class"]
+      error_message = application.error_messages.where(fingerprint: fingerprint).first_or_initialize
+      error_message.error_class ||= data['error_class']
       error_message.error_message ||= message
       error_message.last_error_at = Time.now
       error_message.save
@@ -313,7 +304,7 @@ class AppPerfAgentWorker < ActiveJob::Base
         error_datum.transaction_id = trace_key
         error_datum.message = message
         error_datum.backtrace = backtrace
-        error_datum.source = data["source"]
+        error_datum.source = data['source']
         error_datum.timestamp = timestamp
       end
     end
@@ -324,18 +315,17 @@ class AppPerfAgentWorker < ActiveJob::Base
     metrics = {}
     metric_data = []
 
-    data.select {|d| d.first.eql?("metric") }.each do |datum|
+    data.select { |d| d.first.eql?('metric') }.each do |datum|
       _, timestamp, key, value, tags = *datum
 
-      if key && value
-        metrics[key] ||= Metric.where(name: key, application_id: application.try(:id)).first_or_create
+      next unless key && value
+      metrics[key] ||= Metric.where(name: key, application_id: application.try(:id)).first_or_create
 
-        metric_data << metrics[key].metric_data.new do |metric_datum|
-          metric_datum.host = host
-          metric_datum.value = value
-          metric_datum.tags = tags || {}
-          metric_datum.timestamp = Time.at(timestamp)
-        end
+      metric_data << metrics[key].metric_data.new do |metric_datum|
+        metric_datum.host = host
+        metric_datum.value = value
+        metric_datum.tags = tags || {}
+        metric_datum.timestamp = Time.at(timestamp)
       end
     end
     MetricDatum.import(metric_data)
@@ -343,6 +333,6 @@ class AppPerfAgentWorker < ActiveJob::Base
 
   def generate_fingerprint(message, backtrace)
     message, fingerprint = ErrorMessage.generate_fingerprint(message)
-    return message, backtrace, fingerprint
+    [message, backtrace, fingerprint]
   end
 end

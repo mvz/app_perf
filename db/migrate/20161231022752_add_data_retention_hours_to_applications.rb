@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddDataRetentionHoursToApplications < ActiveRecord::Migration
   def change
     add_column :applications, :data_retention_hours, :decimal, precision: 6, scale: 1

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   module V1
     module Authentication
@@ -17,10 +19,8 @@ module API
           warden.user || @user
         end
 
-        def require_login!(r)
-          unless authenticated?
-            error 401, "Not Authorized"
-          end
+        def require_login!(_r)
+          error 401, 'Not Authorized' unless authenticated?
         end
       end
     end

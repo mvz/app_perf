@@ -1,8 +1,8 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'rails_helper'
 
-describe TracesController, :type => :controller do
+describe TracesController, type: :controller do
   login_user
 
   # TODO: auto-generated
@@ -10,7 +10,7 @@ describe TracesController, :type => :controller do
     it 'works' do
       application = create(:application)
 
-      get :index, :application_id => application
+      get :index, params: { application_id: application }
       expect(response.status).to eq(200)
     end
   end
@@ -19,12 +19,11 @@ describe TracesController, :type => :controller do
   describe 'GET show' do
     it 'works' do
       application = create(:application)
-      trace = create(:trace, :application => application)
+      trace = create(:trace, application: application)
 
-      get :show, :application_id => application, :id => trace.trace_key
+      get :show, params: { application_id: application, id: trace.trace_key }
 
       expect(response.status).to eq(200)
     end
   end
-
 end

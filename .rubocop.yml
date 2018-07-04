@@ -1,0 +1,38 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Exclude:
+  - 'bin/**/*'
+  - 'config/**/*'
+  - 'tmp/**/*'
+  - 'db/schema.rb'
+  TargetRubyVersion: 2.3
+  TargetRailsVersion: 5.0
+
+Rails:
+  Enabled: true
+
+Layout/MultilineMethodCallBraceLayout:
+  EnforcedStyle: same_line
+
+# Multi-line operations should be simply indented. Aligning them makes it even
+# harder to keep a sane line length.
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+# Multi-line operations should be simply indented. Aligning them makes it even
+# harder to keep a sane line length.
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+# Uniform block layout
+Layout/SpaceBeforeBlockBraces:
+  EnforcedStyleForEmptyBraces: space
+
+# Documenting all classes is not common in Rails projects.
+Style/Documentation:
+  Enabled: false
+
+# Prefer symbols to look like symbols
+Style/SymbolArray:
+  EnforcedStyle: brackets

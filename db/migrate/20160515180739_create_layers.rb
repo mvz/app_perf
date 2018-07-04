@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateLayers < ActiveRecord::Migration
   def change
     create_table :layers do |t|
@@ -7,6 +9,6 @@ class CreateLayers < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :layers, [:name, :application_id], :unique => true
+    add_index :layers, [:name, :application_id], unique: true
   end
 end

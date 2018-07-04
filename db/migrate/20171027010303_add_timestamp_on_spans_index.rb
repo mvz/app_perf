@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddTimestampOnSpansIndex < ActiveRecord::Migration
   def change
     add_index :spans, :timestamp

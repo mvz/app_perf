@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDatabaseTypes < ActiveRecord::Migration
   def change
     create_table :database_types do |t|

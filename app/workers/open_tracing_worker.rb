@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 class OpenTracingWorker < ActiveJob::Base
@@ -14,37 +16,37 @@ class OpenTracingWorker < ActiveJob::Base
   alias_attribute :jid, :job_id
 
   def perform(params, body)
-    #AppPerfRpm.without_tracing do
-      license_key      = params.fetch("license_key") { nil }
-      protocol_version = params.fetch("protocol_version") { nil }
+    # AppPerfRpm.without_tracing do
+    license_key      = params.fetch('license_key') { nil }
+    protocol_version = params.fetch('protocol_version') { nil }
 
-      if license_key.nil? ||
-         protocol_version.nil? ||
-         !protocol_version.to_i.eql?(3)
-        return
-      end
+    if license_key.nil? ||
+        protocol_version.nil? ||
+        !protocol_version.to_i.eql?(3)
+      return
+    end
 
-      json     = decompress_params(body)
-      hostname = json.fetch("host")
-      name     = json.fetch("name") { nil }
-      data     = Array(json.fetch("data"))
+    json     = decompress_params(body)
+    hostname = json.fetch('host')
+    name     = json.fetch('name') { nil }
+    data     = Array(json.fetch('data'))
 
-      set_application(license_key, name)
+    set_application(license_key, name)
 
-      if data.present? && application.present?
-        set_host(hostname)
-        layers = load_layers(data)
-        process_data(layers, data)
-      end
-    #end
+    if data.present? && application.present?
+      set_host(hostname)
+      layers = load_layers(data)
+      process_data(layers, data)
+    end
+    # end
   end
 
   private
 
   def set_application(license_key, name)
-    self.application = Application.where(:license_key => license_key).first_or_initialize
-    self.application.name = name
-    self.application.save
+    self.application = Application.where(license_key: license_key).first_or_initialize
+    application.name = name
+    application.save
   end
 
   def set_host(hostname)
@@ -59,13 +61,13 @@ class OpenTracingWorker < ActiveJob::Base
 
   def load_layers(data)
     data
-      .map {|datum| datum["tags"]["component"] || datum["name"] }
+      .map { |datum| datum['tags']['component'] || datum['name'] }
       .uniq
-      .map {|layer|
-        layer = application.layers.where(:name => layer).first_or_initialize
+      .map do |layer|
+        layer = application.layers.where(name: layer).first_or_initialize
         layer.save
         layer
-      }
+      end
   end
 
   def process_data(layers, data)
@@ -88,73 +90,72 @@ class OpenTracingWorker < ActiveJob::Base
   def build_backtraces(log_entries)
     backtraces = []
     log_entries
-      .select {|log_entry| log_entry["event"] == "backtrace" }
-      .each {|log_entry|
-        fields = log_entry["fields"]
-        _backtrace = fields["stack"] || fields[":stack"]
-        if _backtrace
-          backtrace = Backtrace.new
-          backtrace.backtrace = _backtrace
-          backtrace.backtraceable_id = log_entry.span_id
-          backtrace.backtraceable_type = "Span"
-          backtraces << backtrace
-        end
-      }
+      .select { |log_entry| log_entry['event'] == 'backtrace' }
+      .each do |log_entry|
+        fields = log_entry['fields']
+        _backtrace = fields['stack'] || fields[':stack']
+        next unless _backtrace
+        backtrace = Backtrace.new
+        backtrace.backtrace = _backtrace
+        backtrace.backtraceable_id = log_entry.span_id
+        backtrace.backtraceable_type = 'Span'
+        backtraces << backtrace
+      end
     backtraces
   end
 
   def build_spans(layers, data)
-    data.map {|datum|
+    data.map do |datum|
       span = Span.new
       # span.id = SecureRandom.uuid.to_s
       span.application_id = application.id
       span.host_id = host.id
-      span.uuid = datum["id"]
-      span.operation_name = datum["name"]
-      span.trace_id = datum["traceId"]
-      span.parent_id = datum["parentId"]
-      span.name = datum["name"]
-      span.layer_id = layers.find {|l| l.name == (datum["tags"]["component"] || datum["name"]) }.id
-      span.timestamp = Time.at(datum["timestamp"].to_f)
-      span.duration = datum["duration"].to_f
-      span.payload = datum["tags"]
-      span.exclusive_duration = datum["exclusiveDuration"].to_f
+      span.uuid = datum['id']
+      span.operation_name = datum['name']
+      span.trace_id = datum['traceId']
+      span.parent_id = datum['parentId']
+      span.name = datum['name']
+      span.layer_id = layers.find { |l| l.name == (datum['tags']['component'] || datum['name']) }.id
+      span.timestamp = Time.at(datum['timestamp'].to_f)
+      span.duration = datum['duration'].to_f
+      span.payload = datum['tags']
+      span.exclusive_duration = datum['exclusiveDuration'].to_f
       span
-    }
+    end
   end
 
   def build_log_entries(data)
-    data.map {|datum|
-      datum["logEntries"].map {|log_data|
+    data.map do |datum|
+      datum['logEntries'].map do |log_data|
         log_entry = LogEntry.new
-        log_entry.span_id = datum["id"]
-        log_entry.trace_id = datum["traceId"]
-        log_entry.event = log_data["event"] || log_data["fields"]["event"]
-        log_entry.timestamp = Time.at(log_data["timestamp"].to_f)
-        log_entry.fields = log_data["fields"]
+        log_entry.span_id = datum['id']
+        log_entry.trace_id = datum['traceId']
+        log_entry.event = log_data['event'] || log_data['fields']['event']
+        log_entry.timestamp = Time.at(log_data['timestamp'].to_f)
+        log_entry.fields = log_data['fields']
         log_entry
-      }
-    }.flatten
+      end
+    end.flatten
   end
 
   def generate_fingerprint(message, backtrace)
     message, fingerprint = ErrorMessage.generate_fingerprint(message)
-    return message, backtrace, fingerprint
+    [message, backtrace, fingerprint]
   end
 
   def build_errors(log_entries)
     log_entries
-      .select {|log_entry| log_entry.event == "error" }
-      .map {|log_entry|
+      .select { |log_entry| log_entry.event == 'error' }
+      .map do |log_entry|
         error = log_entry.fields
-        message = error[":message"] || error["message"]
-        backtrace = error[":backtrace"] || error["backtrace"]
-        error_class = error[":error_class"] || error["error_class"]
-        source = error[":source"] || error["source"]
+        message = error[':message'] || error['message']
+        backtrace = error[':backtrace'] || error['backtrace']
+        error_class = error[':error_class'] || error['error_class']
+        source = error[':source'] || error['source']
 
         message, backtrace, fingerprint = generate_fingerprint(message, backtrace)
 
-        error_message = application.error_messages.where(:fingerprint => fingerprint).first_or_initialize
+        error_message = application.error_messages.where(fingerprint: fingerprint).first_or_initialize
         error_message.error_class ||= error_class
         error_message.error_message ||= message
         error_message.last_error_at = Time.now
@@ -170,48 +171,47 @@ class OpenTracingWorker < ActiveJob::Base
         error_datum.source = source
         error_datum.timestamp = log_entry.timestamp
         error_datum
-      }
+      end
   end
 
   def get_database_types(spans)
     spans
-      .select {|span| span.payload.has_key?("db.type") }
-      .map {|span| span.tag("db.vendor") }
+      .select { |span| span.payload.key?('db.type') }
+      .map { |span| span.tag('db.vendor') }
       .uniq
-      .map {|adapter|
+      .map do |adapter|
         database_type = DatabaseType.where(
-          :name => adapter,
-          :application_id => application.id
-        ).first_or_initialize
+          name: adapter,
+          application_id: application.id).first_or_initialize
         database_type.application_id = application.id
         database_type.save
         database_type
-      }
+      end
   end
 
   def build_database_calls(spans)
     database_types = get_database_types(spans)
     spans
-      .select {|span| span.payload.has_key?("db.type") }
-      .map {|span|
-        database_type = database_types.find {|dt| dt.name == span.tag("db.vendor") }
+      .select { |span| span.payload.key?('db.type') }
+      .map do |span|
+        database_type = database_types.find { |dt| dt.name == span.tag('db.vendor') }
         database_call = DatabaseCall.new
         database_call.database_type_id = database_type.id
         database_call.application_id = application.id
         database_call.span_id = span.uuid
         database_call.host_id = host.id
         database_call.layer_id = span.layer_id
-        database_call.statement = span.tag("db.statement")
+        database_call.statement = span.tag('db.statement')
         database_call.timestamp = span.timestamp
         database_call.duration = span.duration
         database_call
-      }
+      end
   end
 
   def build_traces(spans)
     spans
       .select(&:is_root?)
-      .map {|span|
+      .map do |span|
         trace = Trace.new
         trace.application_id = application.id
         trace.host_id = host.id
@@ -219,41 +219,41 @@ class OpenTracingWorker < ActiveJob::Base
         trace.timestamp = span.timestamp
         trace.duration = span.duration
         trace
-      }
+      end
   end
 
   def set_exclusive_durations(data)
-    data.map {|datum|
-      datum["exclusiveDuration"] = get_exclusive_duration(datum, data)
+    data.map do |datum|
+      datum['exclusiveDuration'] = get_exclusive_duration(datum, data)
       datum
-    }
+    end
   end
 
   def get_exclusive_duration(span, data)
     # return the exclusive duration if we already set it on this span.
-    #return span["exclusiveDuration"] if span.has_key?("exclusiveDuration")
+    # return span["exclusiveDuration"] if span.has_key?("exclusiveDuration")
 
     # does this span have any children?
     children = span_children_data(span, data)
-    children_duration = if children.size > 0
+    children_duration = if !children.empty?
 
-      # if the span has children, sum up the durations.
-      Array(children).inject(0) do |sum, child|
-        sum + child["duration"]
-      end
-    else
-      # If the span doesn't have any children, then the exclusive duration
-      # is 0. We will subtract this from the duration later to make the
-      # exclusive duration equal to the duration.
-      0
-    end
-    span["duration"] - children_duration
+                          # if the span has children, sum up the durations.
+                          Array(children).inject(0) do |sum, child|
+                            sum + child['duration']
+                          end
+                        else
+                          # If the span doesn't have any children, then the exclusive duration
+                          # is 0. We will subtract this from the duration later to make the
+                          # exclusive duration equal to the duration.
+                          0
+                        end
+    span['duration'] - children_duration
   end
 
   def span_children_data(span, data)
     data
-      .select {|datum| datum["id"] != span["id"] }
-      .select {|datum| datum["parentId"] != nil }
-      .select {|datum| datum["parentId"] == span["id"] }
+      .reject { |datum| datum['id'] == span['id'] }
+      .reject { |datum| datum['parentId'].nil? }
+      .select { |datum| datum['parentId'] == span['id'] }
   end
 end

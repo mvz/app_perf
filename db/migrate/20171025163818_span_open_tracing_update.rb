@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpanOpenTracingUpdate < ActiveRecord::Migration
   def change
     remove_column :spans, :grouping_id, :integer
@@ -8,14 +10,14 @@ class SpanOpenTracingUpdate < ActiveRecord::Migration
     add_column :spans, :parent_id, :string
 
     reversible do |dir|
-      dir.up  {
+      dir.up do
         remove_foreign_key :spans, column: :trace_id
         change_column :spans, :trace_id, :string
-      }
-      dir.down {
+      end
+      dir.down do
         change_column :spans, :trace_id, :integer
         add_foreign_key :spans, column: :trace_id
-      }
+      end
     end
   end
 end

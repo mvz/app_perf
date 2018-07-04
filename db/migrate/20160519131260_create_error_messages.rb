@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateErrorMessages < ActiveRecord::Migration
   def change
     create_table :error_messages do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User::InvitationsController < Devise::InvitationsController
   before_action :configure_permitted_parameters
 
@@ -10,7 +12,6 @@ class User::InvitationsController < Devise::InvitationsController
         :name,
         :password,
         :password_confirmation
-      ]
-    )
+      ])
   end
 end

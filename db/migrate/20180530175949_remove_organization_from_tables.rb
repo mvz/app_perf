@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class RemoveOrganizationFromTables < ActiveRecord::Migration
   def change
-    tables = %w(
+    tables = %w[
       applications
       database_calls
       database_types
@@ -11,7 +13,7 @@ class RemoveOrganizationFromTables < ActiveRecord::Migration
       metrics
       spans
       traces
-    )
+    ]
 
     tables.each do |table|
       remove_column table, :organization_id

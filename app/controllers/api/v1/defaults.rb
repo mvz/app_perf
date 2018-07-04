@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   module V1
     module Defaults
@@ -8,7 +10,7 @@ module API
         plugin :all_verbs
         plugin :hooks
         plugin :sinatra_helpers
-        
+
         def annotations
           ::Stats::AnnotationsService.new(@current_application, @time_range, @params).call
         end

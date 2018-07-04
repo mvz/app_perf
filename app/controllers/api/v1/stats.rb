@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   module V1
     class Stats < Roda
@@ -17,8 +19,8 @@ module API
             data = DurationReporter.new(@current_application, @params).report_data
 
             {
-              :data => data,
-              :annotations => annotations
+              data: data,
+              annotations: annotations
             }
           end
 
@@ -26,8 +28,8 @@ module API
             data = PercentileReporter.new(@current_application, @params).report_data
 
             {
-              :data => data,
-              :annotations => annotations
+              data: data,
+              annotations: annotations
             }
           end
 
@@ -35,7 +37,7 @@ module API
             data = ::Stats::LatencyDistributionService.new(@current_application, @time_range, @params).call
 
             {
-              :data => data
+              data: data
             }
           end
 
@@ -43,7 +45,7 @@ module API
             data = ::Stats::HostsService.new(@current_application, @time_range, @params).call
 
             {
-              :data => data
+              data: data
             }
           end
 
@@ -51,7 +53,7 @@ module API
             data = ::Stats::ControllersService.new(@current_application, @time_range, @params).call
 
             {
-              :data => data
+              data: data
             }
           end
 
@@ -59,7 +61,7 @@ module API
             data = ::Stats::UrlsService.new(@current_application, @time_range, @params).call
 
             {
-              :data => data
+              data: data
             }
           end
 
@@ -67,7 +69,7 @@ module API
             data = ::Stats::LayersService.new(@current_application, @time_range, @params).call
 
             {
-              :data => data
+              data: data
             }
           end
 
@@ -75,7 +77,7 @@ module API
             data = ::Stats::TracesService.new(@current_application, @time_range, @params).call
 
             {
-              :data => data
+              data: data
             }
           end
 
@@ -83,8 +85,8 @@ module API
             data = DatabaseReporter.new(@current_application, @params).report_data
 
             {
-              :data => data,
-              :annotations => annotations
+              data: data,
+              annotations: annotations
             }
           end
 
@@ -92,7 +94,7 @@ module API
             data = ::Stats::DatabaseCallsService.new(@current_application, @time_range, @params).call
 
             {
-              :data => data
+              data: data
             }
           end
         end

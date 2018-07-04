@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class ReportsController < ApplicationController
   def new
-    data = Application.select("pg_sleep(5)").first
+    data = Application.select('pg_sleep(5)').first
 
-    render :json => data
+    render json: data
   end
 
   def error
@@ -10,10 +12,10 @@ class ReportsController < ApplicationController
   end
 
   def profile
-    @profile, @result = ::AppPerfRpm::Tracer.profile("test") do
+    @profile, @result = ::AppPerfRpm::Tracer.profile('test') do
       @profile = []
       @result = nil
-      render_to_string "profile", :layout => false
+      render_to_string 'profile', layout: false
     end
   end
 end

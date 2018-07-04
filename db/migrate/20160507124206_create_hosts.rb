@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateHosts < ActiveRecord::Migration
   def change
     create_table :hosts do |t|
@@ -7,6 +9,6 @@ class CreateHosts < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :hosts, [:name, :application_id], :unique => true
+    add_index :hosts, [:name, :application_id], unique: true
   end
 end

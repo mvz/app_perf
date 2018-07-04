@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserInviter
   def initialize(email, current_user = nil)
     self.email = email
@@ -17,11 +19,11 @@ class UserInviter
   attr_accessor :email, :current_user
 
   def user
-    @user ||= User.find_by_email(email)
+    @user ||= User.find_by(email: email)
   end
 
   def create_user
-    @user = User.where(:email => email).first_or_initialize
+    @user = User.where(email: email).first_or_initialize
     @user.password = SecureRandom.hex
     @user.save
     @user

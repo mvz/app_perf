@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateApplications < ActiveRecord::Migration
   def change
     create_table :applications do |t|
@@ -8,6 +10,6 @@ class CreateApplications < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :applications, [:name, :user_id], :unique => true
+    add_index :applications, [:name, :user_id], unique: true
   end
 end

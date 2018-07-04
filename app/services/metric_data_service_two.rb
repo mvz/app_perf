@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 class MetricDataServiceTwo
   def initialize(metrics, params)
     self.metrics = metrics
     self.params = params
-    self.group_values  = Array(params[:group].split(","))
-    self.select_values = Array(params[:select].split(","))
-    self.period = params[:period] || "minute"
+    self.group_values  = Array(params[:group].split(','))
+    self.select_values = Array(params[:select].split(','))
+    self.period = params[:period] || 'minute'
     self.limit = params[:_limit] || params[:limit]
     self.order = params[:_order] || params[:order]
-    self.headers = Array(params[:headers].to_s.split(","))
+    self.headers = Array(params[:headers].to_s.split(','))
 
     time_range, period = Reporter.time_range(params)
 
@@ -41,7 +43,7 @@ class MetricDataServiceTwo
 
     data = MetricDatum
       .joins(:metric, :host)
-      .where(:metrics => { :name => metrics })
+      .where(metrics: { name: metrics })
 
     data = host_filter(data)
     data = filter_data(data)
@@ -52,26 +54,26 @@ class MetricDataServiceTwo
     data = order_data(data)
     data = data.calculate_all(aggregates)
     {
-      :data => format_data(data),
-      :annotations => annotations
+      data: format_data(data),
+      annotations: annotations
     }
   end
 
   def host
-    @host ||= Host.where(:id => params[:host_id] || params[:_host]).first
+    @host ||= Host.where(id: params[:host_id] || params[:_host]).first
   end
 
   def application
-    @application ||= Application.where(:id => params[:application_id]).first
+    @application ||= Application.where(id: params[:application_id]).first
   end
 
   def host_filter(data)
-    data = data.where(:metric_data => { :host_id => host }) if host
+    data = data.where(metric_data: { host_id: host }) if host
     data
   end
 
   def application_filter(data)
-    data = data.where(:metrics => { :application_id => application }) if application
+    data = data.where(metrics: { application_id: application }) if application
     data
   end
 
@@ -102,37 +104,35 @@ class MetricDataServiceTwo
   def build_aggregates
     self.aggregate_values = {}
     select_values.each do |select_value|
-      divisions = select_value.split("/")
+      divisions = select_value.split('/')
       fragments = divisions.map do |key|
         v = case key
-        when "value"
-          "SUM(metric_data.value)"
-        when "traces"
-          "SUM(CASE WHEN metric_data.tags->>'layer' = 'rack' then (metric_data.tags->>'traces')::int else 0 end)"
-        else
-          "SUM((metric_data.tags->>'#{key}')::int)"
-        end
-        sanitize_sql("#{v} FILTER (WHERE metrics.name = :metrics)", :metrics => metrics)
+            when 'value'
+              'SUM(metric_data.value)'
+            when 'traces'
+              "SUM(CASE WHEN metric_data.tags->>'layer' = 'rack' then (metric_data.tags->>'traces')::int else 0 end)"
+            else
+              "SUM((metric_data.tags->>'#{key}')::int)"
+            end
+        sanitize_sql("#{v} FILTER (WHERE metrics.name = :metrics)", metrics: metrics)
       end
-      key = divisions.join("_").to_sym
-      aggregate_values[key] = "(CASE WHEN #{fragments.last} > 0 THEN #{fragments.join("/")} ELSE 0 END) AS #{key}"
+      key = divisions.join('_').to_sym
+      aggregate_values[key] = "(CASE WHEN #{fragments.last} > 0 THEN #{fragments.join('/')} ELSE 0 END) AS #{key}"
     end
     aggregate_values
   end
 
   def order_data(data)
     if order
-      key = aggregate_values[order.split("/").join("_").to_sym]
-      key = key.to_s.split(" AS ").first
-      if key
-        data = data.order(key).reverse_order
-      end
+      key = aggregate_values[order.split('/').join('_').to_sym]
+      key = key.to_s.split(' AS ').first
+      data = data.order(key).reverse_order if key
     end
     data
   end
 
   def filter_time_range(data)
-    data.where("timestamp BETWEEN ? AND ?", start_time, end_time)
+    data.where('timestamp BETWEEN ? AND ?', start_time, end_time)
   end
 
   def limit_data(data)
@@ -151,15 +151,14 @@ class MetricDataServiceTwo
 
     group_values.each do |group_value|
       case group_value
-      when "timestamp"
-        data = data.group_by_period(period, "metric_data.timestamp", options)
-      when "host"
-        data = data.group("hosts.name")
+      when 'timestamp'
+        data = data.group_by_period(period, 'metric_data.timestamp', options)
+      when 'host'
+        data = data.group('hosts.name')
       else
         sql = sanitize_sql(
-          "metric_data.tags #>> :group_value",
-          :group_value => "{#{group_value}}"
-        )
+          'metric_data.tags #>> :group_value',
+          group_value: "{#{group_value}}")
         data = data.group(sql)
       end
     end
@@ -168,7 +167,7 @@ class MetricDataServiceTwo
 
   def format_data(data)
     case params[:type]
-    when "chart"
+    when 'chart'
       format_chart(data)
     else
       format_table(data)
@@ -179,21 +178,24 @@ class MetricDataServiceTwo
     hash = []
     groups = {}
     data.each_pair do |(group, timestamp), values|
-      value = select_values.map {|s|
-        key = s.split("/").join("_")
+      value = select_values.map do |s|
+        key = s.split('/').join('_')
         values.is_a?(Hash) ? values[key.to_sym].to_f : values.to_f
-      }
+      end
       groups[group] ||= []
       groups[group] << [timestamp, value.first].flatten
     end
 
     groups.each_pair do |group, data|
-      hash.push({
-        :name => group,
-        :data => data,
-        :color => "##{Digest::MD5.hexdigest(group)[0..5]}",
-        :id => "ID-#{group}"
-      }) rescue nil
+      begin
+        hash.push(
+          name: group,
+          data: data,
+          color: "##{Digest::MD5.hexdigest(group)[0..5]}",
+          id: "ID-#{group}")
+      rescue StandardError
+        nil
+      end
     end
 
     hash
@@ -203,16 +205,16 @@ class MetricDataServiceTwo
     hash = {}
 
     hash[:headers] = if headers.present?
-      headers
-    else
-      (group_values + select_values).flatten
-    end
+                       headers
+                     else
+                       (group_values + select_values).flatten
+                     end
 
     hash[:data] = data.map do |groupings, values|
-      value = select_values.map {|s|
-        key = s.split("/").join("_")
+      value = select_values.map do |s|
+        key = s.split('/').join('_')
         values.is_a?(Hash) ? values[key.to_sym].to_f : values.to_f
-      }
+      end
       [groupings, value].flatten
     end
     hash
@@ -225,13 +227,13 @@ class MetricDataServiceTwo
   def annotations
     time_range, period = Reporter.time_range(params)
     Deployment
-      .where("start_time BETWEEN :start AND :end OR end_time BETWEEN :start AND :end", :start => start_time, :end => end_time)
-      .map {|deployment|
+      .where('start_time BETWEEN :start AND :end OR end_time BETWEEN :start AND :end', start: start_time, end: end_time)
+      .map do |deployment|
         {
-          :value => deployment.start_time.to_i * 1000,
-          :color => '#FF0000',
-          :width => 2
+          value: deployment.start_time.to_i * 1000,
+          color: '#FF0000',
+          width: 2
         }
-      }
+      end
   end
 end

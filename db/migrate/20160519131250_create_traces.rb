@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTraces < ActiveRecord::Migration
   def change
     create_table :traces do |t|
@@ -10,6 +12,6 @@ class CreateTraces < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :traces, [:trace_key, :application_id], :unique => true
+    add_index :traces, [:trace_key, :application_id], unique: true
   end
 end

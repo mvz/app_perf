@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DropPayloadColumnsFromSpans < ActiveRecord::Migration
   def change
     remove_column :spans, :action, :string

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateMetrics < ActiveRecord::Migration
   def change
     create_table :metrics do |t|

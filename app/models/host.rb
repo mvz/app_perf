@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Host < ActiveRecord::Base
   belongs_to :application
 
@@ -10,26 +12,22 @@ class Host < ActiveRecord::Base
   validates :name, presence: true
 
   def last_metric_activity
-    metric_data.maximum("metric_data.timestamp")
+    metric_data.maximum('metric_data.timestamp')
   end
 
   def cpu_usage
-    sys = system_cpu("system").value
-    user = system_cpu("user").value
-    idle = system_cpu("idle").value
+    sys = system_cpu('system').value
+    user = system_cpu('user').value
+    idle = system_cpu('idle').value
 
-    if sys && user && idle
-      (sys + user).to_f / ((sys + user).to_f + idle.to_f)
-    else
-      nil
-    end
+    (sys + user).to_f / ((sys + user).to_f + idle.to_f) if sys && user && idle
   end
 
   def system_cpu(type)
     values = metric_data
       .joins(:metric)
-      .where(:metrics => { :name => "system.cpu.#{type}" })
+      .where(metrics: { name: "system.cpu.#{type}" })
       .order(:timestamp)
       .last || MetricDatum.new
-   end
+  end
 end

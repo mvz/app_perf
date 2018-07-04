@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 require 'json'
 require 'zlib'
@@ -12,22 +14,22 @@ module API
     route do |r|
       r.post Integer, String do |protocol_version, license_key|
         params = {
-          "protocol_version" => protocol_version,
-          "license_key" => license_key
+          'protocol_version' => protocol_version,
+          'license_key' => license_key
         }
 
         request.body.rewind
 
-        case params["protocol_version"].to_s
-        when "2"
+        case params['protocol_version'].to_s
+        when '2'
           AppPerfAgentWorker.perform_later(params, request.body.read)
-        when "3"
+        when '3'
           OpenTracingWorker.perform_later(params, request.body.read)
         end
 
         status 200
 
-        ""
+        ''
       end
     end
   end

@@ -1,12 +1,11 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 describe ErrorReporter do
-
   # TODO: auto-generated
   describe '#render' do
-    #it 'works' do
+    # it 'works' do
     #  application = create(:application)
     #  analytic_event_data = create(:analytic_event_datum, :application => application, :name => "Error", :timestamp => Time.now - 5.minutes)
     #  params = {}
@@ -14,12 +13,12 @@ describe ErrorReporter do
     #  expect(view_context).to receive(:area_chart)
     #  error_reporter = ErrorReporter.new(application, params, view_context)
     # error_reporter.render
-    #end
+    # end
   end
 
   # TODO: auto-generated
   describe '#report_data' do
-    #it 'works' do
+    # it 'works' do
     #  application = create(:application)
     #  analytic_event_data = create(:analytic_event_datum, :application => application, :name => "Error")
     #  params = {}
@@ -27,7 +26,6 @@ describe ErrorReporter do
     #  error_reporter = ErrorReporter.new(application, params, view_context)
     #  result = error_reporter.report_data
     #  expect(result).not_to be_nil
-    #end
+    # end
   end
-
 end

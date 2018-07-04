@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDatabaseCalls < ActiveRecord::Migration
   def change
     create_table :database_calls do |t|

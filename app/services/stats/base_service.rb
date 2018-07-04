@@ -1,16 +1,17 @@
-class Stats::BaseService
+# frozen_string_literal: true
 
+class Stats::BaseService
   LIMITS = {
-    "10" => 10,
-    "20" => 20,
-    "50" => 50
-  }
+    '10' => 10,
+    '20' => 20,
+    '50' => 50
+  }.freeze
 
   ORDERS = {
-    "Freq" => "COUNT(DISTINCT traces.id) DESC",
-    "Avg" => "(SUM(traces.duration) / COUNT(DISTINCT traces.id)) DESC",
-    "FreqAvg" => "(COUNT(DISTINCT traces.id) * SUM(traces.duration) / COUNT(DISTINCT traces.id)) DESC"
-  }
+    'Freq' => 'COUNT(DISTINCT traces.id) DESC',
+    'Avg' => '(SUM(traces.duration) / COUNT(DISTINCT traces.id)) DESC',
+    'FreqAvg' => '(COUNT(DISTINCT traces.id) * SUM(traces.duration) / COUNT(DISTINCT traces.id)) DESC'
+  }.freeze
 
   def initialize(application, time_range, params)
     @application = application
@@ -33,6 +34,6 @@ class Stats::BaseService
     application
       .traces
       .joins(:spans)
-      .where(:timestamp => time_range)
+      .where(timestamp: time_range)
   end
 end

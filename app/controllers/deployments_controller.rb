@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeploymentsController < ApplicationController
   def index
     @deployments = @current_application
@@ -7,13 +9,13 @@ class DeploymentsController < ApplicationController
 
     respond_to do |format|
       format.html {}
-      format.json { render :json => @deployments }
+      format.json { render json: @deployments }
     end
   end
 
   def new
     @deployment = @current_application.deployments.new
-    @deployment.event_time = Time.now.strftime("%Y-%m-%d %I:%M %p")
+    @deployment.event_time = Time.now.strftime('%Y-%m-%d %I:%M %p')
   end
 
   def create
@@ -22,7 +24,7 @@ class DeploymentsController < ApplicationController
     if @deployment.save
       redirect_to dynamic_url(@current_application, :deployments)
     else
-      render "new"
+      render 'new'
     end
   end
 
@@ -32,7 +34,6 @@ class DeploymentsController < ApplicationController
     params.require(:deployment).permit(
       :title,
       :description,
-      :event_time
-    )
+      :event_time)
   end
 end

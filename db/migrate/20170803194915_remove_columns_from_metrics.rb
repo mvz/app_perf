@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveColumnsFromMetrics < ActiveRecord::Migration
   def change
     remove_column :metrics, :label

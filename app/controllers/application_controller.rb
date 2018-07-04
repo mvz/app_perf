@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  around_filter :use_time_zone
-  before_filter :authenticate_user!
+  around_action :use_time_zone
+  before_action :authenticate_user!
   before_action :set_current_application
   before_action :set_application_scope
   before_action :set_current_page
@@ -46,9 +48,9 @@ class ApplicationController < ActionController::Base
     @application_scope = Application
     if current_user
       if params[:application_id]
-        @current_application ||= @application_scope.find_by_id(params[:application_id])
+        @current_application ||= @application_scope.find_by(id: params[:application_id])
       elsif session[:application_id]
-        @current_application ||= @application_scope.find_by_id(session[:application_id])
+        @current_application ||= @application_scope.find_by(id: session[:application_id])
       end
       @current_scope = @current_application
     end
@@ -56,16 +58,16 @@ class ApplicationController < ActionController::Base
 
   def set_current_page
     @current_page = {
-      "#{self.class}" => "active",
-      "#{self.class}##{action_name}" => "active"
+      self.class.to_s => 'active',
+      "#{self.class}##{action_name}" => 'active'
     }
   end
 
   def set_layout
     if current_user
-      "application"
+      'application'
     else
-      "public"
+      'public'
     end
   end
 
