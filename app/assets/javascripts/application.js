@@ -13,7 +13,7 @@
 //= require jquery
 //= require vanilla-ujs
 //= require axios
-//= require pace/pace
+//= require pace
 //= require bootstrap-sprockets
 //= require daterangepicker/moment
 //= require daterangepicker/daterangepicker
