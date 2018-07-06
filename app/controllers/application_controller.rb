@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  around_action :use_time_zone
   before_action :authenticate_user!
   before_action :set_current_application
   before_action :set_application_scope
@@ -69,10 +68,6 @@ class ApplicationController < ActionController::Base
     else
       'public'
     end
-  end
-
-  def use_time_zone(&block)
-    Time.use_zone('Eastern Time (US & Canada)', &block)
   end
 
   def set_time_range
