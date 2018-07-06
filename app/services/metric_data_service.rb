@@ -173,8 +173,6 @@ class MetricDataService
   end
 
   def annotations
-    time_range, period = Reporter.time_range(params)
-
     Deployment
       .where('start_time BETWEEN :start AND :end OR end_time BETWEEN :start AND :end', start: start_time, end: end_time)
       .map do |deployment|
