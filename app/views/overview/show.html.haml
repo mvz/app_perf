@@ -28,12 +28,9 @@
                                            :curve => true,
                                            :points => false,
                                            :stacked => true,
-                                           :library => { :chart => { :zoomType => "x" },
-                                                         :hover => { mode: 'index', intersect: false },
-                                                         :tooltips => { mode: 'index', intersect: false },
-                                                         :xAxis => { :type => 'datetime',
-                                                                     :labels => { format: '{value:%I:%M %p}' } },
-                                                         :yAxis => { labels: { format: '{value}ms' }} },
+                                           suffix: 'ms',
+                                           :library => { :hover => { mode: 'index', intersect: false },
+                                                         :tooltips => { mode: 'index', intersect: false } },
                                            :data => dynamic_report_url({}, { :url => "/api/v1/stats/average_duration", :application_id => @current_application.id }) })
 
   .row
@@ -48,12 +45,9 @@
                                            :height => 200,
                                            :curve => true,
                                            :points => false,
-                                           :library => { :chart => { :zoomType => "x" },
-                                                         :hover => { mode: 'index', intersect: false },
-                                                         :tooltips => { mode: 'index', intersect: false },
-                                                         :xAxis => { :type => 'datetime',
-                                                                     :labels => { format: '{value:%I:%M %p}' } },
-                                                         :yAxis => { labels: { format: '{value}ms' }} },
+                                           suffix: 'ms',
+                                           :library => { :hover => { mode: 'index', intersect: false },
+                                                         :tooltips => { mode: 'index', intersect: false } },
                                            :data => dynamic_report_url({}, { :url => "/api/v1/stats/latency", :application_id => @current_application.id }) })
 
       = react_component("ControllerDataPanel", :url => dynamic_report_url({}, { :url => "/api/v1/stats/controllers", :application_id => @current_application.id }))
