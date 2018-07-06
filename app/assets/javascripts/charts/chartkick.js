@@ -121,7 +121,9 @@
         setTitle(options, opts.title);
       }
 
-      setAnnotations(options, annotations);
+      if (setAnnotations !== undefined) {
+        setAnnotations(options, annotations);
+      }
 
       // min
       if ("min" in opts) {
