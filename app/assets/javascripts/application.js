@@ -20,6 +20,7 @@
 //= require vis/vis
 //= require AdminLTE
 //= require raphael
+//= require Chart
 
 //= require utils
 //= require charts/charts
