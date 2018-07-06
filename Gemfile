@@ -37,7 +37,6 @@ gem 'pg', '~> 0.18'
 gem 'pg_histogram'
 gem 'foundation-rails'
 gem 'font-awesome-rails'
-gem 'highcharts-rails'
 gem 'sinatra', require: nil
 gem 'sidekiq'
 gem 'activerecord-import'
