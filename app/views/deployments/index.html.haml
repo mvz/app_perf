@@ -24,7 +24,9 @@
               %tr
                 %th Title
                 %th Event Time
+                %th Description
               - @deployments.each do |deployment|
                 %tr
                   %td= deployment.title
                   %td= deployment.event_time
+                  %td= deployment.description
