@@ -7,4 +7,5 @@ AppPerfRpm.configure do |rpm|
   rpm.ssl = ENV["APP_PERF_SSL"] == "true"
   rpm.sample_rate = ENV["APP_PERF_SAMPLE_RATE"].to_i
   rpm.flush_interval = ENV["APP_PERF_FLUSH_INTERVAL"].to_i
+  rpm.instrumentation.each_value { |val| val[:source] = false }
 end
