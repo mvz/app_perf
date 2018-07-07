@@ -4,7 +4,7 @@ class Trace < ApplicationRecord
   belongs_to :application
   belongs_to :host
 
-  has_many :spans, primary_key: :trace_key
+  has_many :spans, primary_key: :trace_key, dependent: :destroy
   has_one  :root_span,
            -> { where('spans.parent_id IS NULL') },
            primary_key: :trace_key,

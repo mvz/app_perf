@@ -10,11 +10,11 @@ class Span < ApplicationRecord
   belongs_to :parent, primary_key: :uuid, class_name: 'Span'
   has_many :children, primary_key: :uuid, foreign_key: :parent_id, class_name: 'Span'
 
-  has_many :log_entries, primary_key: :uuid
+  has_many :log_entries, primary_key: :uuid, dependent: :destroy
 
-  has_one :database_call, primary_key: :uuid
-  has_one :backtrace, as: :backtraceable, primary_key: :uuid
-  has_one :error, primary_key: :uuid, class_name: 'ErrorDatum'
+  has_one :database_call, primary_key: :uuid, dependent: :destroy
+  has_one :backtrace, as: :backtraceable, primary_key: :uuid, dependent: :destroy
+  has_one :error, primary_key: :uuid, class_name: 'ErrorDatum', dependent: :destroy
 
   delegate :name, to: :layer, prefix: true
 
