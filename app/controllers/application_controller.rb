@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
       elsif session[:application_id]
         @current_application ||= @application_scope.find_by(id: session[:application_id])
       end
-      @current_scope = @current_application
+      @current_scope = current_user
     end
   end
 
