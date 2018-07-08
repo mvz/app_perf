@@ -1,6 +1,7 @@
 GIT
-  remote: https://github.com/randy-girard/app_perf_rpm.git
-  revision: 524f9531fcfe9f2035d9c9041ad18fb6e7ec541c
+  remote: https://github.com/mvz/app_perf_rpm.git
+  revision: 99674eeb12c67b3972bf4b85447c831b7537c77e
+  branch: fixes
   specs:
     app_perf_rpm (0.2.4)
       msgpack
