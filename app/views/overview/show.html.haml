@@ -23,7 +23,7 @@
           %i.fa.fa-clock
           %h3.box-title Average Request Time
         .box-body
-          = react_component("AreaChart", { :refresh => 15,
+          = react_component("AreaChart", { :refresh => 60,
                                            :legend => true,
                                            :curve => true,
                                            :points => false,
@@ -40,7 +40,7 @@
           %i.fa.fa-clock
           %h3.box-title Latency
         .box-body
-          = react_component("LineChart", { :refresh => 15,
+          = react_component("LineChart", { :refresh => 60,
                                            :legend => false,
                                            :height => 200,
                                            :curve => true,
@@ -63,7 +63,7 @@
           %i.fa.fa-clock
           %h3.box-title Latency Distribution
         .box-body
-          = react_component("ColumnChart", { :refresh => 15,
+          = react_component("ColumnChart", { :refresh => 60,
                                              :height => 200,
                                              :legend => false,
                                              :library => { :xAxis => { :labels => { :enabled => false } },
