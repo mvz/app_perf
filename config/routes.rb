@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   resources :users
 
   resources :hosts
-  resources :metrics, :only => [:index, :show] do
+  resources :metrics, :only => [:show] do
     member do
       get "/(:id)" => "metrics#show", :id => /.*/
     end
@@ -24,7 +24,6 @@ Rails.application.routes.draw do
       resources :instances, :controller => "error_instances", :only => [:index, :show]
     end
 
-    resources :metrics, :only => [:index]
     resources :traces, :only => [:index, :show, :database] do
       member do
         get :database
