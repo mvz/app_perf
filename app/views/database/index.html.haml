@@ -23,8 +23,9 @@
           %i.fa.fa-clock
           %h3.box-title Database Query Time
         .box-body
-          = react_component("AreaChart", { :refresh => 15,
+          = react_component("AreaChart", { :refresh => 60,
                                            :legend => "bottom",
+                                           :points => false,
                                            :curve => true,
                                            :library => { :chart => { :zoomType => "x" },
                                                          xAxis: { type: 'datetime', labels: { format: '{value:%I:%M %p}' } },
