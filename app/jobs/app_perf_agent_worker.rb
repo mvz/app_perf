@@ -311,11 +311,18 @@ class AppPerfAgentWorker < ApplicationJob
     metrics = {}
     metric_data = []
 
-    data.select { |d| d.first.eql?('metric') }.each do |datum|
+    application_id = application.try(:id)
+
+    relevant_data = data.select { |d| d.first.eql?('metric') }
+    metrics_keys = relevant_data.map { |datum| datum[2] }.compact
+    metrics_arr = Metric.where(application_id: application_id, name: metrics_keys).to_a
+    metrics_arr.each { |m| metrics[m.name] = m }
+
+    relevant_data.each do |datum|
       _, timestamp, key, value, tags = *datum
 
       next unless key && value
-      metrics[key] ||= Metric.where(name: key, application_id: application.try(:id)).first_or_create
+      metrics[key] ||= Metric.where(name: key, application_id: application_id).first_or_create
 
       metric_data << metrics[key].metric_data.new do |metric_datum|
         metric_datum.host = host
